@@ -287,7 +287,7 @@ create table customers_info (
 
 create table customer_notes (
   note_id uuid primary key default gen_random_uuid(),
-  customer_id uuid references customers(customer_id) on delete cascade,
+  customer_id uuid references customers_info(customer_id) on delete cascade,
   note_text text,
   created_at timestamp default now(),
   updated_at timestamp

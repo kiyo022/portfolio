@@ -1,20 +1,18 @@
-type searchBarTypeProps = {
-  value: string;
-  onChange: (value: string) => void;
+import "./../styles/searchBar.css";
+
+export type SearchBarProps = {
+  onSearch: (value: string) => void;
 };
-/**
- * 検索バーコンポーネント
- *
- * @param param0
- * @returns
- */
-export default function SearchBar({ value, onChange }: searchBarTypeProps) {
+
+export default function SearchBar({ onSearch }: SearchBarProps) {
   return (
-    <input
-      type="text"
-      placeholder="名前・メール・電話番号で検索"
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-    />
+    <div className="searchbar-wrapper">
+      <span className="search-icon">🔍</span>
+      <input
+        className="search-input"
+        placeholder="検索..."
+        onChange={(e) => onSearch(e.target.value)}
+      />
+    </div>
   );
 }

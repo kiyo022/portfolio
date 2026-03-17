@@ -30,10 +30,11 @@ export const useCustomers = () => {
 
     if (error) {
       console.error(error);
+      setCustomers([]); // ← エラーでも空配列をセット
       return;
     }
 
-    setCustomers(data as CustomerProps[]);
+    setCustomers(data ?? []); // ← null でも空配列
   };
 
   useEffect(() => {
@@ -43,7 +44,7 @@ export const useCustomers = () => {
       setLoading(false);
     };
 
-    load(); // ← useEffect 内で async 関数を呼ぶ
+    load();
   }, []);
 
   return { customers, loading, fetchCustomers };

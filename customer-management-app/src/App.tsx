@@ -1,36 +1,54 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import ThemeToggle from "./components/ThemeToggle";
-import CustomerListPage from "./pages/customers";
-import CustomerDetailPage from "./pages/customers/[id]";
-import NewCustomerPages from "./pages/customers/new";
+/**
+ * メインアプリケーションコンポーネント
+ */
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import Navbar from "./components/common/Navbar";
+import { useTheme } from "./hooks/useTheme";
+import CustomerDetailPage from "./pages/CustomerDetailPage";
+import CustomerFormPage from "./pages/CustomerFormPage";
+import CustomerListPage from "./pages/CustomerListPage";
+import "./styles/animations.css";
+import "./styles/globals.css";
 
-export default function App() {
+/**
+ * アプリケーションのメインコンポーネント
+ */
+function App() {
+  // テーマ管理フック
+  const { theme, toggleTheme } = useTheme();
+
   return (
-    <BrowserRouter>
-      <div className="container">
-        <ThemeToggle />
+    <Router>
+      <div
+        style={{
+          backgroundColor: "var(--bg-primary)",
+          color: "var(--text-primary)",
+          minHeight: "100vh",
+          transition: "background-color var(--transition-base)",
+        }}
+      >
+        {/* ナビゲーションバー */}
+        <Navbar theme={theme} onThemeToggle={toggleTheme} />
+
+        {/* メインコンテンツ */}
+        <main style={{ padding: "var(--spacing-4)" }}>
+          <Routes>
+            {/* 顧客一覧ページ */}
+            <Route path="/" element={<CustomerListPage />} />
+
+            {/* 顧客詳細ページ */}
+            <Route path="/customers/:id" element={<CustomerDetailPage />} />
+
+            {/* 顧客新規作成ページ */}
+            <Route path="/customers/new" element={<CustomerFormPage />} />
+
+            {/* 顧客編集ページ */}
+            <Route path="/customers/:id/edit" element={<CustomerFormPage />} />
+          </Routes>
+        </main>
       </div>
-
-      <Routes>
-        {/** 顧客一覧 */}
-        <Route path="/customers" element={<CustomerListPage />} />
-        {/** 顧客追加 */}
-        <Route path="/customers/new" element={<NewCustomerPages />} />
-        {/** 顧客詳細 */}
-        <Route path="/customers/:id" element={<CustomerDetailPage />} />
-        {/** 顧客編集 */}
-        <Route path="/customers/:id/edit" element={<CustomerDetailPage />} />
-        {/** メモ追加 */}
-        <Route
-          path="/customers/:id/notes/new"
-          element={<CustomerDetailPage />}
-        />
-        {/** メモ編集 */}
-        <Route path="/notes/:noteId/edit" element={<CustomerDetailPage />} />
-
-        {/** デフォルトは顧客一覧へ */}
-        <Route path="*" element={<Navigate to="/customers" replace />} />
-      </Routes>
-    </BrowserRouter>
+    </Router>
   );
 }
+
+export default App;

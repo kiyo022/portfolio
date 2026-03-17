@@ -1,41 +1,70 @@
 import { useEffect, useState } from "react";
-import type { CustomerProps } from "./../hooks/useCustomers";
-import { supabase } from "./../lib/supabase";
+import {
+  createCustomer,
+  deleteCustomer,
+  fetchCustomers,
+  updateCustomer,
+} from "../lib/api";
+import type { Customer, CustomerFormInput } from "../types";
 
-export type NoteProps = {
-  note_id: string;
-  customer_id: string;
-  note_text: string;
-  created_at: string;
-  updated_at: string;
-};
+export const useCustomers = () => {
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-export const useCustomerDetail = (id: string | undefined) => {
-  const [customer, setCustomer] = useState<CustomerProps | null>(null);
-  const [notes, setNotes] = useState<NoteProps[]>([]);
-  const [loading, setLoading] = useState(true);
+  const loadCustomers = async (search?: string) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const data = await fetchCustomers(search);
+      setCustomers(data || []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error loading customers");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const addCustomer = async (input: CustomerFormInput) => {
+    try {
+      const newCustomer = await createCustomer(input);
+      setCustomers([newCustomer, ...customers]);
+      return newCustomer;
+    } catch (err) {
+      throw err instanceof Error ? err : new Error("Error creating customer");
+    }
+  };
+
+  const editCustomer = async (id: string, input: CustomerFormInput) => {
+    try {
+      const updated = await updateCustomer(id, input);
+      setCustomers(customers.map((c) => (c.customer_id === id ? updated : c)));
+      return updated;
+    } catch (err) {
+      throw err instanceof Error ? err : new Error("Error updating customer");
+    }
+  };
+
+  const removeCustomer = async (id: string) => {
+    try {
+      await deleteCustomer(id);
+      setCustomers(customers.filter((c) => c.customer_id !== id));
+    } catch (err) {
+      throw err instanceof Error ? err : new Error("Error deleting customer");
+    }
+  };
 
   useEffect(() => {
-    const load = async () => {
-      if (!id) return;
-      setLoading(true);
+    loadCustomers();
+  }, []);
 
-      const { data: customerData } = await supabase
-        .from("customers")
-        .select("*")
-        .eq("customer_id", id)
-        .single();
-      const { data: notesData } = await supabase
-        .from("notes")
-        .select("*")
-        .eq("customer_id", id)
-        .order("created_at", { ascending: false });
-
-      setCustomer(customerData as CustomerProps);
-      setNotes(notesData as NoteProps[]);
-    };
-    load();
-  }, [id]);
-
-  return { customer, notes, loading };
+  return {
+    customers,
+    isLoading,
+    error,
+    loadCustomers,
+    addCustomer,
+    editCustomer,
+    removeCustomer,
+  };
 };

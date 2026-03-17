@@ -1,15 +1,14 @@
-type SortKey = "created_at" | "updated_at";
+import "./../styles/sortSelect.css";
 
-type sortSelectProps = {
-  value: SortKey;
-  onChange: (value: SortKey) => void;
+export type SortSelectProps = {
+  onSort: (value: string) => void;
 };
 
-export default function SortSelect({ value, onChange }: sortSelectProps) {
+export default function SortSelect({ onSort }: SortSelectProps) {
   return (
-    <select value={value} onChange={(e) => onChange(e.target.value as SortKey)}>
-      <option value="created_at">作成日（新しい順）</option>
-      <option value="updated_at">更新日（新しい順）</option>
+    <select className="sort-select" onChange={(e) => onSort(e.target.value)}>
+      <option value="created_at">登録日順</option>
+      <option value="updated_at">更新日順</option>
     </select>
   );
 }

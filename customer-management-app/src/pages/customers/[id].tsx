@@ -1,5 +1,7 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
+import Card from "../../components/Card";
 import { supabase } from "../../lib/supabase";
+import Button from "../../styleComponent/Button";
 import { useCustomerDetail } from "./../../hooks/useCustomerDetail";
 
 export default function CustomerDetailPage() {
@@ -21,32 +23,67 @@ export default function CustomerDetailPage() {
 
   if (loading) return <p>読み込み中...</p>;
   if (!customer) return <p>顧客が見つかりません。</p>;
+
   return (
     <div>
-      <h1>顧客詳細</h1>
+      <Card title="顧客情報">
+        <p>
+          <strong>名前：</strong>
+          {customer.customer_name}
+        </p>
+        <p>
+          <strong>メール：</strong>
+          {customer.email}
+        </p>
+        <p>
+          <strong>電話：</strong>
+          {customer.phone}
+        </p>
+        <p>
+          <strong>住所：</strong>
+          {customer.address}
+        </p>
+      </Card>
 
-      <p>名前: {customer.customer_name}</p>
-      <p>メール: {customer.email}</p>
-      <p>電話: {customer.phone}</p>
-      <p>住所: {customer.address}</p>
+      <Card
+        title="操作"
+        footer={
+          <>
+            <Button
+              variant="primary"
+              onClick={() => navigate(`/customers/${id}/edit`)}
+            >
+              編集
+            </Button>
+            <Button variant="danger" onClick={handleDelete}>
+              削除
+            </Button>
+          </>
+        }
+      />
 
-      <Link to={".cutomers/${id}/edit"}>顧客を編集</Link>
-      <button onClick={handleDelete}>顧客を削除</button>
-
-      <h2>メモ一覧</h2>
-      {notes.length === 0 ? (
-        <p>メモがありません。</p>
-      ) : (
-        <ul>
-          {notes.map((n) => (
-            <li key={n.note_id}>
-              {new Date(n.created_at).toLocaleString()} - {n.note_text}
-              <Link to={`./notes/${n.note_id}/edit`}>編集</Link>
-            </li>
-          ))}
-        </ul>
-      )}
-
+      <Card title="メモ一覧">
+        {notes.length === 0 ? (
+          <p>メモはありません</p>
+        ) : (
+          notes.map((n) => (
+            <Card
+              key={n.note_id}
+              footer={
+                <Button
+                  variant="secondary"
+                  onClick={() => navigate(`/notes/${n.note_id}/edit`)}
+                >
+                  編集
+                </Button>
+              }
+            >
+              <p>{new Date(n.created_at).toLocaleString()}</p>
+              <p>{n.note_text}</p>
+            </Card>
+          ))
+        )}
+      </Card>
       <Link to={"/customers/${id}/notes/new"}>メモを追加</Link>
     </div>
   );

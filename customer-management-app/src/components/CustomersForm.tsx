@@ -1,5 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import type { CustomerProps } from "../hooks/useCustomers";
+import Button from "../styleComponent/Button";
+import FormField from "./FormField";
 
 type CustomerFromProps = {
   onSubmit: (
@@ -19,6 +22,7 @@ export default function CustomerForm({
   const [phone, setPhone] = useState(initial.phone ?? "");
   const [address, setAddress] = useState(initial.address ?? "");
 
+  const navigate = useNavigate();
   const handleSubmit: React.SubmitEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
 
@@ -37,27 +41,42 @@ export default function CustomerForm({
 
   return (
     <form onSubmit={handleSubmit}>
-      <div>
-        <label>顧客名</label>
+      <FormField label="顧客名">
         <input
+          className="form-input"
           value={customer_name}
           onChange={(e) => setCustomerName(e.target.value)}
         />
-      </div>
-      <div>
-        <label>メール</label>
-        <input value={email} onChange={(e) => setEmail(e.target.value)} />
-      </div>
-      <div>
-        <label>電話</label>
-        <input value={phone} onChange={(e) => setPhone(e.target.value)} />
-      </div>
-      <div>
-        <label>住所</label>
-        <input value={address} onChange={(e) => setAddress(e.target.value)} />
-      </div>
+      </FormField>
 
-      <button type="submit">保存する</button>
+      <FormField label="メール">
+        <input
+          className="form-input"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </FormField>
+
+      <FormField label="電話番号">
+        <input
+          className="form-input"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+        />
+      </FormField>
+
+      <FormField label="住所">
+        <textarea
+          className="form-textarea"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+        />
+      </FormField>
+
+      <Button type="submit">保存する</Button>
+      <Button variant="secondary" onClick={() => navigate("/customers")}>
+        キャンセル
+      </Button>
     </form>
   );
 }

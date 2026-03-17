@@ -1,75 +1,268 @@
-# React + TypeScript + Vite
+# 顧客管理アプリ（Customer Management App）
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React × Supabase を用いた小規模 CRM（顧客管理）アプリです。  
+顧客情報の登録・編集・検索に加え、顧客ごとのメモ（対応履歴）を管理できます。
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 📌 機能概要
 
-## React Compiler
+- ✅ 顧客一覧表示  
+- ✅ 顧客検索（名前・メール・電話番号）  
+- ✅ 顧客の新規登録  
+- ✅ 顧客情報の編集・削除  
+- ✅ 顧客詳細画面（基本情報＋メモ一覧）  
+- ✅ メモ（対応履歴）の追加・編集・削除  
+- ✅ 作成日・更新日によるソート  
+- ✅ レスポンシブ対応  
+- ✅ テーマ切り替え（ライト/ダーク）  
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+---
 
-Note: This will impact Vite dev & build performances.
+## 🧱 データベース構造（Supabase）
 
-## Expanding the ESLint configuration
+### customers_info テーブル（顧客情報）
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+| カラム名        | 型            | 説明 |
+|----------------|---------------|------|
+| customer_id    | uuid (PK)     | 顧客ID（自動生成） |
+| customer_name  | varchar(63)   | 顧客名 |
+| email          | varchar(255)  | メールアドレス |
+| phone          | varchar(20)   | 電話番号 |
+| address        | text          | 住所 |
+| created_at     | timestamp     | 作成日時（自動） |
+| updated_at     | timestamp     | 更新日時 |
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### customer_notes テーブル（顧客メモ・対応履歴）
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+| カラム名     | 型            | 説明 |
+|--------------|---------------|------|
+| note_id      | uuid (PK)     | メモID（自動生成） |
+| customer_id  | uuid (FK)     | 顧客ID（customers.customer_id） |
+| note_text    | text          | メモ内容 |
+| created_at   | timestamp     | 作成日時（自動） |
+| updated_at   | timestamp     | 更新日時 |
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+**リレーション設定**  
+- `customer_notes.customer_id → customers_info.customer_id`  
+- ON DELETE CASCADE（顧客削除時にメモも削除）
+
+---
+
+## 🖥️ 画面構成
+
+### 1️⃣ 顧客一覧（Customers List）
+- 顧客の一覧表示  
+- キーワード検索（名前・メール・電話）  
+- ソート（作成日・更新日）  
+- 顧客詳細へのリンク  
+- 顧客追加ボタン  
+
+### 2️⃣ 顧客詳細（Customer Detail）
+- 顧客の基本情報表示  
+- 顧客編集ボタン  
+- 顧客削除ボタン  
+- メモ一覧（時系列）  
+- メモ追加ボタン  
+
+### 3️⃣ 顧客追加・編集（Customer Form）
+- 顧客情報入力フォーム  
+- バリデーション機能
+- 保存・キャンセルボタン  
+
+### 4️⃣ メモ管理（Notes）
+- メモ一覧表示（時系列）
+- メモ追加・編集・削除
+- タイムスタンプ表示
+
+---
+
+## 🔧 使用技術
+
+| カテゴリ | 技術 |
+|---------|------|
+| Frontend | React 18+, TypeScript |
+| Build Tool | Vite |
+| Backend/Database | Supabase |
+| Routing | React Router v6 |
+| Styling | CSS Variables / Tailwind CSS / CSS Modules |
+| Version Control | Git / GitHub |
+
+---
+
+## 📂 ディレクトリ構成
+
+```
+customer-management-app/
+├── README.md
+├── package.json
+├── vite.config.ts
+├── tsconfig.json
+├── tsconfig.app.json
+├── tsconfig.node.json
+├── index.html
+├── public/
+│   └── favicon.svg
+├── src/
+│   ├── components/
+│   │   ├── common/
+│   │   │   ├── Button.tsx
+│   │   │   ├── Card.tsx
+│   │   │   ├── Modal.tsx
+│   │   │   └── Navbar.tsx
+│   │   ├── customers/
+│   │   │   ├── CustomerList.tsx
+│   │   │   ├── CustomerDetail.tsx
+│   │   │   ├── CustomerForm.tsx
+│   │   │   └── CustomerCard.tsx
+│   │   └── notes/
+│   │       ├── NoteList.tsx
+│   │       ├── NoteForm.tsx
+│   │       └── NoteItem.tsx
+│   ├── pages/
+│   │   ├── CustomerListPage.tsx
+│   │   │   ├── CustomerDetailPage.tsx
+│   │   ├── CustomerFormPage.tsx
+│   │   └── NotFoundPage.tsx
+│   ├── hooks/
+│   │   ├── useCustomers.ts
+│   │   ├── useNotes.ts
+│   │   ├── useTheme.ts
+│   │   └── useForm.ts
+│   ├── lib/
+│   │   ├── supabase.ts
+│   │   ├── api.ts
+│   │   └── utils.ts
+│   ├── types/
+│   │   └── index.ts
+│   ├── styles/
+│   │   ├── globals.css
+│   │   ├── variables.css
+│   │   └── animations.css
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── vite-env.d.ts
+└── .env.example
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🚀 セットアップ手順
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 前提条件
+- Node.js v18以上
+- npm v9以上
+- Supabaseアカウント
+
+### 1️⃣ リポジトリをクローン
+
+```bash
+git clone https://github.com/kiyo022/portfolio.git
+cd portfolio/customer-management-app
 ```
+
+### 2️⃣ 依存パッケージをインストール
+
+```bash
+npm install
+```
+
+### 3️⃣ Supabase プロジェクトを作成
+
+1. https://supabase.com にアクセス
+2. 新規プロジェクトを作成
+3. Project API Keys を控えておく
+4. SQL Editor でテーブルを作成
+
+**顧客テーブル:**
+```sql
+create table customers_info (
+  customer_id uuid primary key default gen_random_uuid(),
+  customer_name varchar(63) not null,
+  email varchar(255),
+  phone varchar(20),
+  address text,
+  created_at timestamp default now(),
+  updated_at timestamp
+);
+```
+
+**メモテーブル:**
+```sql
+create table customer_notes (
+  note_id uuid primary key default gen_random_uuid(),
+  customer_id uuid references customers_info(customer_id) on delete cascade,
+  note_text text,
+  created_at timestamp default now(),
+  updated_at timestamp
+);
+```
+
+### 4️⃣ 環境変数を設定
+
+プロジェクト直下に `.env` ファイルを作成：
+
+```env
+VITE_SUPABASE_URL=<YOUR_SUPABASE_URL>
+VITE_SUPABASE_ANON_KEY=<YOUR_SUPABASE_ANON_KEY>
+```
+
+`.env.example` ファイルを参考にしてください。
+
+### 5️⃣ 開発サーバーを起動
+
+```bash
+npm run dev
+```
+
+ブラウザで `http://localhost:5173` にアクセスしてください。
+
+---
+
+## 📦 ビルド
+
+### 開発ビルド
+```bash
+npm run dev
+```
+
+### 本番ビルド
+```bash
+npm run build
+```
+
+### ビルド結果のプレビュー
+```bash
+npm run preview
+```
+
+---
+
+## 🎨 スタイルガイド
+
+このプロジェクトは [Design System](../UIFRAME.md) に従っています。
+
+---
+
+## 🔄 今後の拡張案
+
+- [ ] タグ管理（顧客分類）
+- [ ] ステータス管理（見込み客 / 契約済み など）
+- [ ] CSV エクスポート
+- [ ] 顧客ごとのファイル添付（Supabase Storage）
+- [ ] メール送信機能
+- [ ] ユーザー認証機能
+- [ ] 複数ユーザー対応
+- [ ] アナリティクスダッシュボード
+
+---
+
+## 📝 ライセンス
+
+このプロジェクトはMITライセンスの下に公開されています。
+
+---
+
+## 🤝 コントリビューション
+
+バグ報告や改善提案は、GitHubのIssuesセクションからお願いします。

@@ -176,3 +176,23 @@ export const deleteNote = async (noteId: string) => {
 
   if (error) throw error;
 };
+
+/**
+ * 顧客情報を削除
+ *
+ * @param customerId 顧客ID
+ */
+export const deleteCustomers = async (customerId: string) => {
+  const { error } = await supabase
+    .from("customers_info")
+    .delete()
+    .eq("customer_id", customerId);
+
+  const { error: noteError } = await supabase
+    .from("customer_notes")
+    .delete()
+    .eq("customer_id", customerId);
+
+  if (error) throw error;
+  if (noteError) throw noteError;
+};

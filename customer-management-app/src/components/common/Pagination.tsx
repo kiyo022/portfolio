@@ -1,5 +1,5 @@
 import React from "react";
-import ReactPaginate from "react-paginate";
+import Button from "./Button";
 
 export type PaginationProps = {
   totalCount: number;
@@ -23,26 +23,57 @@ const Pagination: React.FC<PaginationProps> = ({
     return null;
   }
 
-  const handlePageChange = (event: { selected: number }) => {
-    onPageChange(event.selected + 1);
+  // コンテナのスタイル
+  const containerStyle: React.CSSProperties = {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: "var(--spacing-4)",
+    margin: "var(--spacing-8) 0",
+  };
+
+  // ページ情報のスタイル
+  const pageInfoStyle: React.CSSProperties = {
+    color: "var(--text-primary)",
+    fontSize: "var(--text-base)",
+    minWidth: "120px",
+    textAlign: "center",
+  };
+
+  // ボタンコンテナのスタイル
+  const buttonContainerStyle: React.CSSProperties = {
+    display: "flex",
+    gap: "var(--spacing-2)",
   };
 
   return (
-    <div
-      style={{ display: "flex", justifyContent: "center", margin: "20px 0" }}
-    >
-      <ReactPaginate
-        pageCount={totalPages}
-        marginPagesDisplayed={2}
-        pageRangeDisplayed={5}
-        onPageChange={handlePageChange}
-        containerClassName="pagination"
-        activeClassName="active"
-        previousLabel="前へ"
-        nextLabel="次へ"
-        breakLabel="..."
-        forcePage={currentPage - 1}
-      />
+    <div style={containerStyle}>
+      {/* 前へボタン */}
+      <div style={buttonContainerStyle}>
+        <Button
+          onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+          variant="secondary"
+          disabled={currentPage === 1}
+        >
+          ◀ 前へ
+        </Button>
+      </div>
+
+      {/* ページ情報 */}
+      <div style={pageInfoStyle}>
+        {currentPage} / {totalPages} ページ
+      </div>
+
+      {/* 次へボタン */}
+      <div style={buttonContainerStyle}>
+        <Button
+          onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+          variant="secondary"
+          disabled={currentPage === totalPages}
+        >
+          次へ ▶
+        </Button>
+      </div>
     </div>
   );
 };

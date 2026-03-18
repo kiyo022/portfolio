@@ -2,10 +2,14 @@
  * 顧客詳細ページ
  */
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import CustomerDetail from "../components/customers/CustomerDetail";
 import { useNotes } from "../hooks/useNotes";
-import { fetchCustomerById } from "../lib/api";
+import {
+  deleteCustomersDetail,
+  deleteCustomersDetailMemo,
+  fetchCustomerById,
+} from "../lib/api";
 import type { Customer } from "../types";
 
 /**
@@ -32,6 +36,9 @@ const CustomerDetailPage: React.FC = () => {
     editNote,
     removeNote,
   } = useNotes(id || "");
+
+  // ナビゲーションフック
+  const navigate = useNavigate();
 
   /**
    * 顧客データを読み込む
@@ -102,6 +109,31 @@ const CustomerDetailPage: React.FC = () => {
     }
   };
 
+  /**
+   * 顧客情報を削除
+   */
+  const handleDeleteCustomer = async (customerId: string) => {
+    if (
+      !window.confirm(
+        "本当にこの顧客を削除しますか？関連するメモもすべて削除されます。",
+      )
+    )
+      return;
+
+    try {
+      // 顧客削除APIを呼び出す
+      await deleteCustomersDetail(customerId);
+      await deleteCustomersDetailMemo(customerId);
+      alert("顧客が削除されました");
+      navigate("/");
+    } catch (err) {
+      alert(
+        "顧客の削除に失敗しました: " +
+          (err instanceof Error ? err.message : "不明なエラー"),
+      );
+    }
+  };
+
   return (
     <CustomerDetail
       customer={customer}
@@ -112,6 +144,7 @@ const CustomerDetailPage: React.FC = () => {
       onAddNote={handleAddNote}
       onEditNote={handleEditNote}
       onDeleteNote={handleDeleteNote}
+      onDeleteCustomer={handleDeleteCustomer}
     />
   );
 };

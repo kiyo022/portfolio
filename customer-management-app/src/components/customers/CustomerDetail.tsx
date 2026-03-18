@@ -34,6 +34,9 @@ interface CustomerDetailProps {
 
   // メモ削除時のコールバック
   onDeleteNote: (noteId: string) => Promise<void>;
+
+  // 顧客情報削除時のコールバック
+  onDeleteCustomer?: (customerId: string) => Promise<void>;
 }
 
 /**
@@ -48,6 +51,7 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({
   onAddNote,
   onEditNote,
   onDeleteNote,
+  onDeleteCustomer,
 }) => {
   if (isLoading) {
     return (
@@ -165,6 +169,16 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({
           >
             <Button>✏️ 編集</Button>
           </Link>
+
+          {/* 削除ボタン */}
+          <Button
+            onClick={async () => {
+              await onDeleteCustomer?.(customer.customer_id);
+            }}
+            variant="danger"
+          >
+            🗑️ 削除
+          </Button>
         </div>
       </div>
 

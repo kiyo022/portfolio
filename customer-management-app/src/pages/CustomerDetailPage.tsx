@@ -5,7 +5,11 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import CustomerDetail from "../components/customers/CustomerDetail";
 import { useNotes } from "../hooks/useNotes";
-import { deleteCustomers, fetchCustomerById } from "../lib/api";
+import {
+  deleteCustomersDetail,
+  deleteCustomersDetailMemo,
+  fetchCustomerById,
+} from "../lib/api";
 import type { Customer } from "../types";
 
 /**
@@ -118,7 +122,8 @@ const CustomerDetailPage: React.FC = () => {
 
     try {
       // 顧客削除APIを呼び出す
-      await deleteCustomers(customerId);
+      await deleteCustomersDetail(customerId);
+      await deleteCustomersDetailMemo(customerId);
       alert("顧客が削除されました");
       navigate("/");
     } catch (err) {

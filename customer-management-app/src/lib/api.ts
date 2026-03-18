@@ -182,7 +182,7 @@ export const deleteNote = async (noteId: string) => {
  *
  * @param customerId 顧客ID
  */
-export const deleteCustomers = async (customerId: string) => {
+export const deleteCustomersDetail = async (customerId: string) => {
   const { error } = await supabase
     .from("customers_info")
     .delete()
@@ -194,5 +194,19 @@ export const deleteCustomers = async (customerId: string) => {
     .eq("customer_id", customerId);
 
   if (error) throw error;
+  if (noteError) throw noteError;
+};
+
+/**
+ * 顧客情報から関連するメモも削除
+ *
+ * @param customerId 顧客ID
+ */
+export const deleteCustomersDetailMemo = async (customerId: string) => {
+  const { error: noteError } = await supabase
+    .from("customer_notes")
+    .delete()
+    .eq("customer_id", customerId);
+
   if (noteError) throw noteError;
 };

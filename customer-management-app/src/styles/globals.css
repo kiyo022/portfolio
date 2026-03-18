@@ -130,3 +130,46 @@ a button {
 a {
   display: inline;
 }
+
+/* ReactPaginate スタイル */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-2);
+  margin: var(--spacing-6) 0;
+  list-style: none;
+  padding: 0;
+}
+
+.pagination li {
+  display: inline-block;
+}
+
+.pagination a,
+.pagination span {
+  display: inline-block;
+  padding: var(--spacing-2) var(--spacing-3);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  color: var(--text-primary);
+}
+
+.pagination a:hover {
+  background-color: var(--bg-secondary);
+  border-color: var(--color-primary-600);
+}
+
+.pagination .active a,
+.pagination .active span {
+  background-color: var(--color-primary-600);
+  color: white;
+  border-color: var(--color-primary-600);
+}
+
+.pagination .disabled a,
+.pagination .disabled span {
+  cursor: not-allowed;
+  opacity: 0.5;
+}

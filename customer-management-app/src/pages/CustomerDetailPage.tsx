@@ -2,10 +2,10 @@
  * 顧客詳細ページ
  */
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import CustomerDetail from "../components/customers/CustomerDetail";
 import { useNotes } from "../hooks/useNotes";
-import { deleteCustomer, fetchCustomerById } from "../lib/api";
+import { deleteCustomers, fetchCustomerById } from "../lib/api";
 import type { Customer } from "../types";
 
 /**
@@ -32,6 +32,9 @@ const CustomerDetailPage: React.FC = () => {
     editNote,
     removeNote,
   } = useNotes(id || "");
+
+  // ナビゲーションフック
+  const navigate = useNavigate();
 
   /**
    * 顧客データを読み込む
@@ -115,8 +118,9 @@ const CustomerDetailPage: React.FC = () => {
 
     try {
       // 顧客削除APIを呼び出す
-      await deleteCustomer(customerId);
+      await deleteCustomers(customerId);
       alert("顧客が削除されました");
+      navigate("/");
     } catch (err) {
       alert(
         "顧客の削除に失敗しました: " +

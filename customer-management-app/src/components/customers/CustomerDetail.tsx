@@ -171,15 +171,14 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({
           </Link>
 
           {/* 削除ボタン */}
-          <Link
-            to={"/"}
-            style={linkStyle}
-            onClick={() =>
-              onDeleteCustomer && onDeleteCustomer(customer.customer_id)
-            }
+          <Button
+            onClick={async () => {
+              await onDeleteCustomer?.(customer.customer_id);
+            }}
+            variant="danger"
           >
-            <Button variant="danger">🗑️ 削除</Button>
-          </Link>
+            🗑️ 削除
+          </Button>
         </div>
       </div>
 

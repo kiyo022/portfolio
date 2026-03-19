@@ -1,7 +1,7 @@
 /**
  * 顧客一覧ページ
  */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../components/common/Pagination";
 import CustomerList from "../components/customers/CustomerList";
@@ -31,7 +31,6 @@ const CustomerListPage: React.FC = () => {
   //ソート順
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
-  console.log(sortBy, sortOrder);
   /**
    * 全顧客を取得して状態を更新
    * @param query 検索キーワード（省略可）
@@ -44,8 +43,6 @@ const CustomerListPage: React.FC = () => {
         const data = await fetchCustomers();
         setCustomers(data);
         setCurrentPage(1); // データ更新時はページをリセット
-        setSortBy("customer_name"); // データ更新時はソート基準をリセット
-        setSortOrder("asc"); // データ更新時はソート順をリセット
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "顧客の読み込みに失敗しました",
@@ -110,16 +107,11 @@ const CustomerListPage: React.FC = () => {
       );
     }
   };
-
-  const startIndex = (currentPage - 1) * PAGE_SIZE;
-  const endIndex = startIndex + PAGE_SIZE;
-  const displayedCustomers = customers.slice(startIndex, endIndex);
-
   /**
    * 顧客ソート機能
    */
-  useEffect(() => {
-    const sortsedCustomers = [...customers].sort((a, b) => {
+  const sortsedCustomers = useMemo(() => {
+    return [...customers].sort((a, b) => {
       if (sortBy === "customer_name") {
         return sortOrder === "asc"
           ? a.customer_name.localeCompare(b.customer_name)
@@ -135,8 +127,11 @@ const CustomerListPage: React.FC = () => {
       }
       return 0;
     });
-    setCustomers(sortsedCustomers);
-  }, [sortBy, sortOrder]);
+  }, [customers, sortBy, sortOrder]);
+
+  const startIndex = (currentPage - 1) * PAGE_SIZE;
+  const endIndex = startIndex + PAGE_SIZE;
+  const displayedCustomers = sortsedCustomers.slice(startIndex, endIndex);
 
   return (
     <>

@@ -23,7 +23,15 @@ const CustomerListPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   //検索キーワード
   const [searchQuery, setSearchQuery] = useState("");
+  //ソート基準
+  const [sortBy, setSortBy] = useState<
+    "customer_name" | "created_at" | "updated_at"
+  >("customer_name");
 
+  //ソート順
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
+  console.log(sortBy, sortOrder);
   /**
    * 全顧客を取得して状態を更新
    * @param query 検索キーワード（省略可）
@@ -36,6 +44,8 @@ const CustomerListPage: React.FC = () => {
         const data = await fetchCustomers();
         setCustomers(data);
         setCurrentPage(1); // データ更新時はページをリセット
+        setSortBy("customer_name"); // データ更新時はソート基準をリセット
+        setSortOrder("asc"); // データ更新時はソート順をリセット
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "顧客の読み込みに失敗しました",
@@ -105,6 +115,29 @@ const CustomerListPage: React.FC = () => {
   const endIndex = startIndex + PAGE_SIZE;
   const displayedCustomers = customers.slice(startIndex, endIndex);
 
+  /**
+   * 顧客ソート機能
+   */
+  useEffect(() => {
+    const sortsedCustomers = [...customers].sort((a, b) => {
+      if (sortBy === "customer_name") {
+        return sortOrder === "asc"
+          ? a.customer_name.localeCompare(b.customer_name)
+          : b.customer_name.localeCompare(a.customer_name);
+      } else if (sortBy === "created_at") {
+        return sortOrder === "asc"
+          ? new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+          : new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      } else if (sortBy === "updated_at") {
+        const aUpdated = a.updated_at ? new Date(a.updated_at).getTime() : 0;
+        const bUpdated = b.updated_at ? new Date(b.updated_at).getTime() : 0;
+        return sortOrder === "asc" ? aUpdated - bUpdated : bUpdated - aUpdated;
+      }
+      return 0;
+    });
+    setCustomers(sortsedCustomers);
+  }, [sortBy, sortOrder]);
+
   return (
     <>
       <CustomerList
@@ -114,6 +147,8 @@ const CustomerListPage: React.FC = () => {
         onSearch={handleSearch}
         onDelete={handleDelete}
         onAddNew={() => navigate("/customers/new")}
+        onSortChangeSort={setSortBy}
+        onSortChangeOrder={setSortOrder}
       />
       <Pagination
         totalCount={customers.length}

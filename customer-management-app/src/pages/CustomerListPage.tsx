@@ -1,7 +1,7 @@
 /**
  * 顧客一覧ページ
  */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../components/common/Pagination";
 import CustomerList from "../components/customers/CustomerList";
@@ -23,6 +23,13 @@ const CustomerListPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   //検索キーワード
   const [searchQuery, setSearchQuery] = useState("");
+  //ソート基準
+  const [sortBy, setSortBy] = useState<
+    "customer_name" | "created_at" | "updated_at"
+  >("customer_name");
+
+  //ソート順
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   /**
    * 全顧客を取得して状態を更新
@@ -100,10 +107,31 @@ const CustomerListPage: React.FC = () => {
       );
     }
   };
+  /**
+   * 顧客ソート機能
+   */
+  const sortsedCustomers = useMemo(() => {
+    return [...customers].sort((a, b) => {
+      if (sortBy === "customer_name") {
+        return sortOrder === "asc"
+          ? a.customer_name.localeCompare(b.customer_name)
+          : b.customer_name.localeCompare(a.customer_name);
+      } else if (sortBy === "created_at") {
+        return sortOrder === "asc"
+          ? new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+          : new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      } else if (sortBy === "updated_at") {
+        const aUpdated = a.updated_at ? new Date(a.updated_at).getTime() : 0;
+        const bUpdated = b.updated_at ? new Date(b.updated_at).getTime() : 0;
+        return sortOrder === "asc" ? aUpdated - bUpdated : bUpdated - aUpdated;
+      }
+      return 0;
+    });
+  }, [customers, sortBy, sortOrder]);
 
   const startIndex = (currentPage - 1) * PAGE_SIZE;
   const endIndex = startIndex + PAGE_SIZE;
-  const displayedCustomers = customers.slice(startIndex, endIndex);
+  const displayedCustomers = sortsedCustomers.slice(startIndex, endIndex);
 
   return (
     <>
@@ -114,6 +142,8 @@ const CustomerListPage: React.FC = () => {
         onSearch={handleSearch}
         onDelete={handleDelete}
         onAddNew={() => navigate("/customers/new")}
+        onSortChangeSort={setSortBy}
+        onSortChangeOrder={setSortOrder}
       />
       <Pagination
         totalCount={customers.length}

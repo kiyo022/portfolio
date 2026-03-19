@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { debounce } from "../../lib/utils";
 import type { Customer } from "../../types";
 import Button from "../common/Button";
+import { SortOption } from "../common/SortOptions";
 import CustomerCard from "./CustomerCard";
 
 interface CustomerListProps {
@@ -26,6 +27,12 @@ interface CustomerListProps {
 
   // 新規顧客追加画面へ遷移するコールバック
   onAddNew: () => void;
+
+  // ソートオプションの変更コールバック
+  onSortChangeSort?: (
+    sortBy: "customer_name" | "created_at" | "updated_at",
+  ) => void;
+  onSortChangeOrder?: (sortOrder: "asc" | "desc") => void;
 }
 
 /**
@@ -38,6 +45,8 @@ const CustomerList: React.FC<CustomerListProps> = ({
   onSearch,
   onDelete,
   onAddNew,
+  onSortChangeSort,
+  onSortChangeOrder,
 }) => {
   // 検索入力値の状態
   const [searchQuery, setSearchQuery] = useState("");
@@ -137,6 +146,13 @@ const CustomerList: React.FC<CustomerListProps> = ({
     gap: "var(--spacing-4)",
   };
 
+  //セレクトボックスのスタイル
+  const selectBoxStyle: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    gap: "var(--spacing-2)",
+  };
+
   return (
     <div style={containerStyle}>
       {/* ヘッダー（タイトルと新規追加ボタン） */}
@@ -165,6 +181,13 @@ const CustomerList: React.FC<CustomerListProps> = ({
             e.currentTarget.style.boxShadow = "none";
           }}
         />
+        {/* ソートオプション*/}
+        <div style={selectBoxStyle}>
+          <SortOption
+            onSortChangeSort={onSortChangeSort}
+            onSortChangeOrder={onSortChangeOrder}
+          />
+        </div>
       </div>
 
       {/* エラーメッセージ表示 */}
@@ -177,7 +200,7 @@ const CustomerList: React.FC<CustomerListProps> = ({
         // 空状態
         <div style={emptyStyle}>
           {searchQuery
-            ? "該当する顧客が見つかり��せん"
+            ? "該当する顧客が見つかりません"
             : "顧客がまだ登録されていません"}
         </div>
       ) : (

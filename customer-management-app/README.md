@@ -77,6 +77,16 @@ React × Supabase を用いた小規模 CRM（顧客管理）アプリです。
 
 ---
 
+| **Frontend** | React 18, TypeScript, Vite |
+| **Backend** | Supabase (PostgreSQL) |
+| **Routing** | React Router v6 |
+| **Styling** | CSS Variables, Tailwind CSS |
+| **Tools** | Git, GitHub, ESLint |
+| **状態管理** | React Hooks (useState, useEffect, useMemo) |
+| **ページネーション** | 自作コンポーネント |
+  
+---
+
 ## 🔧 技術スタック
 
 | カテゴリ | 技術 |
@@ -110,7 +120,7 @@ customer-management-app/
 │   │   │   ├── Card.tsx
 │   │   │   ├── Modal.tsx
 │   │   │   ├── Navbar.tsx
-│   │   │   ├── Pagenation.tsx
+│   │   │   ├── Pagination.tsx
 │   │   │   └── SortOptions.tsx
 │   │   ├── customers/
 │   │   │   ├── CustomerList.tsx
@@ -248,15 +258,28 @@ npm run preview
 
 ## 📖 使用方法
 
-・顧客一覧画面
+### 1. 顧客一覧画面の表示と検索
+1.トップページにアクセスすると、登録済み顧客の一覧が表示されます。
+2.検索ボックスに「顧客名」「メール」「電話番号」を入力して検索可能
+3.ソートドロップダウンで「名前」「作成日」「更新日」でソート可能
 <img width="1299" height="637" alt="image" src="https://github.com/user-attachments/assets/26922e91-cf9e-4283-ab75-0d0b82a8cbef" />
-・新規顧客追加画面
+### 2. 新規顧客追加画面（顧客の新規登録）
+1.「新規追加」ボタンのクリック
+2.顧客情報を入力フォームに入力
+3.「保存」ボタンをクリック
+4.顧客一覧に追加される
 <img width="766" height="808" alt="image" src="https://github.com/user-attachments/assets/e1fc38fc-1d0c-41f9-a5c9-9a1efff2812f" />
-・顧客詳細画面
+### 3. 顧客詳細の表示（顧客詳細画面）
+1.一覧から顧客をクリック
+2.顧客の詳細情報とメモ一覧が表示される
 <img width="1321" height="930" alt="image" src="https://github.com/user-attachments/assets/b4c9bb15-bafb-41f4-b3db-71f2eb266d8a" />
-・顧客編集画面
+### 4. メモの管理
+1.顧客詳細画面でメモを追加
+2.対応履歴を時系列で記録できる
 <img width="841" height="811" alt="image" src="https://github.com/user-attachments/assets/92de9ad6-548e-42ac-ab22-87278440410a" />
 
+### 5. テーマの切り替え
+　- Navbarの「🌙」アイコンをクリックしてテーマを切り替え可能
 
 
 ---

@@ -5,7 +5,12 @@
 ## 📚 プロジェクト一覧
 
 ### 🏢 顧客管理アプリ（Customer Management App）
+
 **説明**: React × Supabase を用いた小規模 CRM（顧客管理）アプリ
+
+## 🌐 デモサイト
+
+👉 [顧客管理アプリを試す](https://portfolio-customer-app.vercel.app)
 
 **主な機能**:
 - ✅ 顧客情報の管理（登録・編集・削除）

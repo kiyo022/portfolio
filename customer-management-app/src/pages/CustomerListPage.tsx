@@ -21,8 +21,7 @@ const CustomerListPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   // 現在のページ状態
   const [currentPage, setCurrentPage] = useState(1);
-  //検索キーワード
-  const [searchQuery, setSearchQuery] = useState("");
+
   //ソート基準
   const [sortBy, setSortBy] = useState<
     "customer_name" | "created_at" | "updated_at"
@@ -58,7 +57,6 @@ const CustomerListPage: React.FC = () => {
    * @param query 検索キーワード
    */
   const handleSearch = async (query: string) => {
-    setSearchQuery(query);
     setError(null);
     if (query.trim() === "") {
       const data = await fetchCustomers();

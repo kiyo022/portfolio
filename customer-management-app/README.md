@@ -13,7 +13,7 @@ React × Supabase を用いた小規模 CRM（顧客管理）アプリです。
 - ✅ 顧客情報の編集・削除  
 - ✅ 顧客詳細画面（基本情報＋メモ一覧）  
 - ✅ メモ（対応履歴）の追加・編集・削除  
-- ✅ 作成日・更新日によるソート  
+- ✅ 名前・作成日・更新日によるソート  
 - ✅ レスポンシブ対応  
 - ✅ テーマ切り替え（ライト/ダーク）  
 
@@ -77,16 +77,16 @@ React × Supabase を用いた小規模 CRM（顧客管理）アプリです。
 
 ---
 
-## 🔧 使用技術
+## 🔧 技術スタック
 
 | カテゴリ | 技術 |
 |---------|------|
-| Frontend | React 18+, TypeScript |
-| Build Tool | Vite |
-| Backend/Database | Supabase |
-| Routing | React Router v6 |
-| Styling | CSS Variables / Tailwind CSS / CSS Modules |
-| Version Control | Git / GitHub |
+| **Frontend** | React 18, TypeScript, Vite |
+| **Backend** | Supabase (PostgreSQL) |
+| **Routing** | React Router v6 |
+| **Styling** | CSS Variables, Tailwind CSS |
+| **Tools** | Git, GitHub, ESLint |
+
 
 ---
 
@@ -109,7 +109,9 @@ customer-management-app/
 │   │   │   ├── Button.tsx
 │   │   │   ├── Card.tsx
 │   │   │   ├── Modal.tsx
-│   │   │   └── Navbar.tsx
+│   │   │   ├── Navbar.tsx
+│   │   │   ├── Pagenation.tsx
+│   │   │   └── SortOptions.tsx
 │   │   ├── customers/
 │   │   │   ├── CustomerList.tsx
 │   │   │   ├── CustomerDetail.tsx
@@ -244,11 +246,26 @@ npm run preview
 
 ---
 
+## 📖 使用方法
+
+・顧客一覧画面
+<img width="1299" height="637" alt="image" src="https://github.com/user-attachments/assets/26922e91-cf9e-4283-ab75-0d0b82a8cbef" />
+・新規顧客追加画面
+<img width="766" height="808" alt="image" src="https://github.com/user-attachments/assets/e1fc38fc-1d0c-41f9-a5c9-9a1efff2812f" />
+・顧客詳細画面
+<img width="1321" height="930" alt="image" src="https://github.com/user-attachments/assets/b4c9bb15-bafb-41f4-b3db-71f2eb266d8a" />
+・顧客編集画面
+<img width="841" height="811" alt="image" src="https://github.com/user-attachments/assets/92de9ad6-548e-42ac-ab22-87278440410a" />
+
+
+
+---
+
 ## 🔄 今後の拡張案
 
 - [ ] タグ管理（顧客分類）
 - [ ] ステータス管理（見込み客 / 契約済み など）
-- [ ] CSV エクスポート
+- [ ] CSV エクスポート機能、インポート機能
 - [ ] 顧客ごとのファイル添付（Supabase Storage）
 - [ ] メール送信機能
 - [ ] ユーザー認証機能

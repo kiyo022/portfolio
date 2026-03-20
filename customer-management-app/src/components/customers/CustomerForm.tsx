@@ -3,7 +3,11 @@
  * 新規作成・編集用の統一フォーム
  */
 import React, { useEffect, useState } from "react";
-import { isValidEmail, isValidPhone } from "../../lib/utils";
+import {
+  validateCustomerName,
+  validateEmail,
+  validatePhone,
+} from "../../lib/validation";
 import type { Customer, CustomerFormInput } from "../../types";
 import Button from "../common/Button";
 import Card from "../common/Card";
@@ -81,45 +85,21 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
   };
 
   /**
-   * フォームバリデーション
-   */
-  const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    // 顧客名は必須
-    if (!formData.customer_name.trim()) {
-      newErrors.customer_name = "顧客名は必須です";
-    } else if (formData.customer_name.length > 63) {
-      newErrors.customer_name = "顧客名は63文字以内です";
-    }
-
-    // メールアドレスのバリデーション（空でない場合）
-    if (formData.email && !isValidEmail(formData.email)) {
-      newErrors.email = "有効なメールアドレスを入力してください";
-    }
-
-    // 電話番号のバリデーション（空でない場合）
-    if (formData.phone && !isValidPhone(formData.phone)) {
-      newErrors.phone = "有効な電話番号を入力してください（10桁以上）";
-    }
-
-    // 住所の長さチェック
-    if (formData.address && formData.address.length > 255) {
-      newErrors.address = "住所は255文字以内です";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  /**
    * フォーム送信時のハンドラ
    */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // バリデーション
-    if (!validateForm()) {
+    const nameError = validateCustomerName(formData.customer_name);
+    const emailError = validateEmail(formData.email || "");
+    const phoneError = validatePhone(formData.phone || "");
+
+    if (nameError || emailError || phoneError) {
+      setErrors({
+        name: nameError || "",
+        email: emailError || "",
+        phone: phoneError || "",
+      });
       return;
     }
 

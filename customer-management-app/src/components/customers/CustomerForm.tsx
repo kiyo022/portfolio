@@ -4,9 +4,9 @@
  */
 import React, { useEffect, useState } from "react";
 import {
+  validateCustomerName,
   validateEmail,
   validatePhone,
-  valudeateCustomerName,
 } from "../../lib/validation";
 import type { Customer, CustomerFormInput } from "../../types";
 import Button from "../common/Button";
@@ -90,16 +90,16 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const nameError = valudeateCustomerName(formData.customer_name);
+    const nameError = validateCustomerName(formData.customer_name);
     const emailError = validateEmail(formData.email || "");
     const phoneError = validatePhone(formData.phone || "");
 
-    const name = nameError ? nameError : "";
-    const email = emailError ? emailError : "";
-    const phone = phoneError ? phoneError : "";
-
     if (nameError || emailError || phoneError) {
-      setErrors({ name, email, phone });
+      setErrors({
+        name: nameError || "",
+        email: emailError || "",
+        phone: phoneError || "",
+      });
       return;
     }
 

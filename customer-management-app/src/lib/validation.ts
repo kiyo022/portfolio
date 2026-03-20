@@ -1,5 +1,5 @@
 //顧客名
-export const valudeateCustomerName = (name: string): string | null => {
+export const validateCustomerName = (name: string): string | null => {
   if (!name.trim()) {
     return "顧客名は必須です";
   }
